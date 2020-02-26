@@ -31,7 +31,7 @@ Usage
 Features
 ---------
 
-Given the two subspaces, X and Y, the distance between the two subspaces is depndent on the singular values of their inner product.
+Given two subspaces, X and Y, each of dimension $p$, the distance between the two subspaces is depndent on the singular values, $\sigma_{1}... \sigma_{p}$ of their inner product.
 
 Implemented metrics include:
         * Asimov
