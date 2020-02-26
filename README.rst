@@ -13,19 +13,20 @@ Package to compute the distance between equi-dimensional subspaces.  Implements 
 
 Usage
 --------
+.. code-block:: python
 
-import numpy as np
-from submet import subspace
+        import numpy as np
+        from submet import subspace
 
-X = np.random.rand(10, 5)
-Y = np.random.rand(10, 5)
+        X = np.random.rand(10, 5)
+        Y = np.random.rand(10, 5)
 
-metric='grassmann'
+        metric='grassmann'
 
-S = subspace.SubspaceDistance(metric)
-S.fit(X, Y)
+        S = subspace.SubspaceDistance(metric)
+        S.fit(X, Y)
 
-print('Distance: %.3f' % (S.distance_)
+        print('Distance: %.3f' % (S.distance_)
 
 
 * Free software: 3-clause BSD license
