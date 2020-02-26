@@ -31,7 +31,7 @@ Usage
 Features
 ---------
 
-Given two subspaces, :math:`X` and :math:`Y`, each of dimension :math:`p`, the distance between the two subspaces is dependent on the singular values, :math:`\theta_{1} ... \theta_{p}` of their inner product.
+Given two subspaces, :math:`X` and :math:`Y`, each of dimension :math:`p`, the distance between the two subspaces is dependent on the singular values, :math:`\sigma_1 ... \sigma_p` of their inner product.
 
 Implemented metrics include:
         * Asimov
