@@ -11,6 +11,23 @@ submet
 
 Package to compute the distance between equi-dimensional subspaces.  Implements a variety of metrics.
 
+Usage
+--------
+
+import numpy as np
+from submet import subspace
+
+X = np.random.rand(10, 5)
+Y = np.random.rand(10, 5)
+
+metric='grassmann'
+
+S = subspace.SubspaceDistance(metric)
+S.fit(X, Y)
+
+print('Distance: %.3f' % (S.distance_)
+
+
 * Free software: 3-clause BSD license
 * Documentation: (COMING SOON!) https://kristianeschenburg.github.io/submet.
 
