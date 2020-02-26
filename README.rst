@@ -28,11 +28,18 @@ Usage
 
         print('Distance: %.3f' % (S.distance_)
 
-
-* Free software: 3-clause BSD license
-* Documentation: (COMING SOON!) https://kristianeschenburg.github.io/submet.
-
 Features
---------
+---------
 
-* TODO
+Given the two subspaces, X and Y, the distance between the two subspaces is depndent on the singular values of their inner product.
+
+Implemented metrics include:
+        * Asimov
+        * Binet-Cauchy
+        * Chordal
+        * Fubini-Study
+        * Grassmann
+        * Martin
+        * Procrustes
+        * Projection
+        * Spectral
