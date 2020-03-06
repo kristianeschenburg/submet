@@ -1,7 +1,14 @@
+import numpy as np
+
 class Metric(object):
 
     """
     Wrapper class to compute the distance between two equi-dimensional subspaces.
+    For two subspaces, X and Y, we compute the inner product matrix, S,
+    as transpose(X)xY.  
+
+    Each distance measures is a unique function of the principle angles
+    of S, which themselves are the inverse cosine of the singular values of S.
     """
     
     def __init__(self, metric='Grassmann'):
@@ -20,7 +27,7 @@ class Metric(object):
                              'Projection': projection,
                              'Spectral': spectral}
         
-        return function_map[metric](theta)
+        return function_map[self.metric](theta)
 
 
 def grassmann(theta):
