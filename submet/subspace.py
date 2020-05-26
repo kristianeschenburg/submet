@@ -37,34 +37,22 @@ class SubspaceDistance(object):
         # return dimensions of each subspace
         if X.ndim == 1:
             X = X[:, None]
-        [xn, xp] = X.shape
 
         if Y.ndim == 1:
             Y = Y[:, None]
-        [yn, yp] = Y.shape
-
-        # get minimum dimension
-        p = np.min([xp, yp])
 
         # orthogonalize each subspace
-        [q1, r1] = np.linalg.qr(X)
-        [q2, r2] = np.linalg.qr(Y)
+        q1,_ = np.linalg.qr(X)
+        q2,_ = np.linalg.qr(Y)
 
         # compute inner product matrix
-        S = q1.T.dot(q2)
-
-        # compute SVD of inner product matrix
-        if p > 1:
-            [u, s, v] = np.linalg.svd(S, full_matrices=False)
-
-        elif p == 1:
-            u = v = 1
-            s = S
+        S = q1.T.dot(q2)[None, :]
+        [u, s, v] = np.linalg.svd(S, full_matrices=False)
 
         # compute principle angles
-        theta = np.arccos(s)
+        theta = np.arccos(s).squeeze()
 
-        self.x_ = q1.dot(u)
-        self.y_ = q2.dot(v)
-
+        # compute subspace distance
         self.distance_ = M.fit(theta)
+        self.x_ = q1.dot(u).squeeze()
+        self.y_ = q2.dot(v).squeeze()
