@@ -1,5 +1,6 @@
+from numba import prange
 import numpy as np
-from submet.metrics import Metric
+from submet.metrics import SubspaceMetric
 
 
 class SubspaceDistance(object):
@@ -22,37 +23,72 @@ class SubspaceDistance(object):
 
         self.metric = metric
 
-    def fit(self, X, Y):
+    def fit(self, X, Y=None, axis=0):
         """
         Fit subspace distance between two equi-dimensional subspaces.
-        
+
         Parameters:
         - - - - -
         X, Y: float, array
             two equi-dimensional subspaces
+            Y is optional
+
+        If Y is not provided, output is an Sx by Sx matrix, where Sx is 
+        the number of samples in X.
+        If Y is provided, output is an Sx by Sy matrix, where Sx/Sy are 
+        the number of samples in each matrix.
+
         """
 
-        M = Metric(self.metric)
+        M = SubspaceMetric(self.metric)
+        n = X.shape[axis]
+        p = Y.shape[axis] if np.any(Y) else X.shape[axis]
 
-        # return dimensions of each subspace
-        if X.ndim == 1:
-            X = X[:, None]
+        d = np.zeros((n, p))
 
-        if Y.ndim == 1:
-            Y = Y[:, None]
+        for i in prange(n):
+            for j in prange(p):
 
+                theta = self._pabs(X[i], Y[j] if np.any(Y) else X[j])
+                d[i, j] = M.fit(theta)
+        
+        if not np.any(Y):
+            d[np.diag_indices(n)] = 0
+                
+        self.distance_ = d
+
+    def _pabs(self, x, y):
+        
+        """
+        Compute the principle angles between two subspaces.
+
+        Parameters:
+        - - - - -
+        x,y: float, array
+            two subspaces of each dimensions
+        
+        Returns:
+        - - - -
+        theta: float, array
+            principle angles between the subspaces spanned 
+            by the columns of x and y
+        """
+        
+        if x.ndim == 1:
+            x = x[:, None]
+
+        if y.ndim == 1:
+            y = y[:, None]
+        
         # orthogonalize each subspace
-        q1,_ = np.linalg.qr(X)
-        q2,_ = np.linalg.qr(Y)
-
+        q1,_ = np.linalg.qr(x)
+        q2,_ = np.linalg.qr(y)
+        
         # compute inner product matrix
         S = q1.T.dot(q2)[None, :]
         [u, s, v] = np.linalg.svd(S, full_matrices=False)
 
         # compute principle angles
         theta = np.arccos(s).squeeze()
-
-        # compute subspace distance
-        self.distance_ = M.fit(theta)
-        self.x_ = q1.dot(u).squeeze()
-        self.y_ = q2.dot(v).squeeze()
+        
+        return theta
