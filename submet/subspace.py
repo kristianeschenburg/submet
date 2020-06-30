@@ -1,6 +1,5 @@
 from numba import prange
 import numpy as np
-from submet.metrics import SubspaceMetric
 
 
 class SubspaceDistance(object):
@@ -50,15 +49,15 @@ class SubspaceDistance(object):
             for j in prange(p):
 
                 theta = self._pabs(X[i], Y[j] if np.any(Y) else X[j])
-                d[i, j] = M.fit(theta)
-        
+                td = M.fit(theta)
+                d[i, j] = td
+
         if not np.any(Y):
             d[np.diag_indices(n)] = 0
-                
+
         self.distance_ = d
 
     def _pabs(self, x, y):
-        
         """
         Compute the principle angles between two subspaces.
 
@@ -73,22 +72,22 @@ class SubspaceDistance(object):
             principle angles between the subspaces spanned 
             by the columns of x and y
         """
-        
+
         if x.ndim == 1:
             x = x[:, None]
 
         if y.ndim == 1:
             y = y[:, None]
-        
+
         # orthogonalize each subspace
-        q1,_ = np.linalg.qr(x)
-        q2,_ = np.linalg.qr(y)
-        
+        q1, _ = np.linalg.qr(x)
+        q2, _ = np.linalg.qr(y)
+
         # compute inner product matrix
         S = q1.T.dot(q2)[None, :]
         [u, s, v] = np.linalg.svd(S, full_matrices=False)
 
         # compute principle angles
-        theta = np.arccos(s).squeeze()
-        
+        theta = np.arccos(s)
+
         return theta

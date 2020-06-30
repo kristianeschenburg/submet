@@ -53,20 +53,6 @@ class SubspaceMetric(object):
         return function_map[self.metric](theta)
 
 
-def grassmann(theta):
-    
-    """
-    Compute Grassman distance between two equi-dimensional subspaces.
-    
-    Parameters:
-    - - - - -
-    theta: float, array
-        arccos(singular values) of inner product of two equi-dimensional subspaces
-    """
-
-    return np.sqrt((theta**2).sum())
-
-
 def asimov(theta):
     
     """
@@ -78,7 +64,7 @@ def asimov(theta):
         arccos(singular values) of inner product of two equi-dimensional subspaces
     """
 
-    return theta[-1]
+    return theta[0, -1]
 
 
 def binetcauchy(theta):
@@ -123,6 +109,20 @@ def fubinistudy(theta):
     return np.arccos(np.prod(np.cos(theta)))
 
 
+def grassmann(theta):
+    
+    """
+    Compute Grassman distance between two equi-dimensional subspaces.
+    
+    Parameters:
+    - - - - -
+    theta: float, array
+        arccos(singular values) of inner product of two equi-dimensional subspaces
+    """
+
+    return np.sqrt((theta**2).sum())
+
+
 def martin(theta):
     
     """
@@ -162,7 +162,7 @@ def projection(theta):
         arccos(singular values) of inner product of two equi-dimensional subspaces
     """
     
-    return np.sin(theta[-1])
+    return np.sin(theta[0,-1])
 
 
 def spectral(theta):
@@ -176,7 +176,7 @@ def spectral(theta):
         arccos(singular values) of inner product of two equi-dimensional subspaces
     """
     
-    return 2*np.sin(theta[-1]/2)
+    return 2*np.sin(theta[0,-1]/2)
 
 
 def spearman(X, y=None):
@@ -201,6 +201,7 @@ def spearman(X, y=None):
     rho = spearmanr(X, y)[0]
 
     return rho
+
 
 def pearson(X, y=None):
 
