@@ -1,6 +1,29 @@
 import numpy as np
+import scipy.spatial.distance as ssd
+from scipy.stats import spearmanr
 
-class Metric(object):
+class UnivariateMetric(object):
+
+    """
+    Wrapper class to compute the similarity between two matrices.
+
+    Here, we provide only Spearman rho and Pearson R correlation
+    similarities.
+    """
+
+    def __init__(self, metric='spearman'):
+
+        self.metric=metric
+    
+    def fit(self, X, y=None):
+
+        function_map = {'spearman': spearman,
+                        'pearson': pearson}
+        
+        return function_map[self.metric](X, y)
+
+
+class SubspaceMetric(object):
 
     """
     Wrapper class to compute the distance between two equi-dimensional subspaces.
@@ -145,7 +168,7 @@ def projection(theta):
 def spectral(theta):
     
     """
-    Compute Projection distance between two equi-dimensional subspaces.
+    Compute Spectral distance between two equi-dimensional subspaces.
     
     Parameters:
     - - - - -
@@ -154,3 +177,65 @@ def spectral(theta):
     """
     
     return 2*np.sin(theta[-1]/2)
+
+
+def spearman(X, y=None):
+
+    """
+    Compute the Spearman rho rank correlation of a matrix's features.
+
+    Parameters:
+    - - - - -
+    X: float, array
+        N by K matrix
+    y: float, array
+        optional
+        N by M matrix
+    
+    Returns:
+    - - - -
+    rho: float, array
+        (M+K) by (M+K)  correlation matrix
+    """
+
+    rho = spearmanr(X, y)[0]
+
+    return rho
+
+def pearson(X, y=None):
+
+    """
+    Compute the Pearson R correlation of a matrix's features.
+
+    Parameters:
+    - - - - -
+    X: float, array
+        N by K matrix
+    y: float, array
+        optional
+        N by M matrix
+
+    Returns:
+    - - - -
+    sim: float, array
+        K by K correlation matrix
+        K by M cross-correlation matrix (if y defined)
+    """
+
+    xd = X.ndim
+    
+    if not y:
+        sim = ssd.squareform(ssd.pdist(X.T, metric='correlation'))
+        sim = 1-sim
+
+    if y:
+        yd = y.ndim
+        if yd == 1:
+            y = y[None,:]
+        
+        sim = ssd.cdist(X.T, y, metric='correlation')
+        sim = 1-sim
+    
+    return sim
+
+        
